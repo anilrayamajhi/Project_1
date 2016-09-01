@@ -9,15 +9,12 @@ var app = {
   //
 
   intervalFunc: function(){
+    app.timer = 0;
     app.interval= setInterval(function() {
              app.timer += 1;
+             console.log("gun");
                $('#timer').html(app.timer);
-              if(app.player.currentPlay.score === 6)
-              {
-                console.log("ganey");
-                clearInterval(app.interval);
-                clearInterval(app.timer);
-                  }
+               $("#timer").css('visibility', 'visible');
             }, 1000);
   },
 
@@ -49,6 +46,7 @@ var app = {
       $('#nv4').append($('input[name=player2]').val());
       app.player.two.name = $('input[name=player2]').val();
     }
+    app.intervalFunc();
     app.switchFunc();
   },
 
@@ -57,13 +55,12 @@ var app = {
     $('#splash').css('visibility','visible');
 
     (this.player.currentPlay === this.player.one) ? (this.player.currentPlay = this.player.two): (this.player.currentPlay = this.player.one);
+
     app.shuffleFunc();
   },
 
   shuffleFunc: function(){
-    app.timer = 0;
-    clearInterval(app.interval);
-    app.intervalFunc();
+
     for(var i =0; i < app.boxes.length; i++){
       random = Math.floor(Math.random() *i);
       temp = app.boxes[i];
@@ -111,32 +108,57 @@ var app = {
   },
 
   winFunc: function() {
-    if(app.player.currentPlay.score === 6){
-      app.player.currentPlay.time = app.timer;
-      console.log(app.timer);
+    setTimeout(function(){
+      if(app.player.currentPlay.score === 6){
+        app.player.currentPlay.time = app.timer;
+        console.log(app.player.currentPlay.time);
+        $("#timer").css('visibility', 'hidden');
 
-
-      app.switchFunc();
-      // alert(app.player.currentPlay.name+ " Ready");
-      $("#container").css('visibility', 'hidden');
-        $('.change').html('<h1>  '+app.player.currentPlay.name+ ' READY!</h1><p>Hit ENTER</p>');
-
-      // app.clickHandlers();
-      $(document).keyup(function(ev){
-        if (ev.which == 13){
-          app.play2();
-          $(this).off();
+        app.switchFunc();
+        if(app.player.currentPlay === app.player.one){
+        if(app.player.one.time > app.player.two.time){
+            app.trash();
+            $('.change').html('<h1>  '+app.player.two.name+ ' WINS!</h1><p>Hit RESTART GAME</p>');
         }
-      });
+        else if(app.player.one.time < app.player.two.time){
+            app.trash();
+            $('.change').html('<h1>  '+app.player.one.name+ ' WINS!</h1><p>Hit RESTART GAME</p>');
+        }
+        else {
+              app.trash();
+              $('.change').html('<h1>DRAW!!</h1><p>Hit RESTART GAME</p>');
+          }
+        }
+        else {
+          app.trash();
+          $('.change').html('<h1>  '+app.player.currentPlay.name+ ' READY!</h1><p>Hit ENTER</p>');
+        clearInterval(app.interval);
+        $('#timer').html(0);
+        $(document).keyup(function(ev){
+          if (ev.which == 13){
+            app.play2();
+            $(this).off();
+          }
+        });
+      }
     }
+    }, 500);
+  },
+
+  trash: function(){
+    $("#container").css({'visibility': 'hidden', 'height': '1px'});
+    $("#container > div").css({'visibility': 'hidden', 'height': '1px'});
+      $('#winDeclare').addClass('change');
   },
 
   play2: function (){
-    $('div[class=change]').remove();
-    $("#container").css('visibility', 'visible');
+    $('#winDeclare').removeClass('change');
+    $('#winDeclare').html('');
+    $("#container").css({'visibility': 'visible', 'height': '500px'});
+    $("#container > div").css({'visibility': 'visible', 'height': '150px'});
     $('#container').children().removeClass("A B C D E F");
     $('#container').children().removeAttr('data-val');
-    count = [];
+    app.intervalFunc(app.interval);
     app.shuffleFunc();
   },
 
