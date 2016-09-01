@@ -3,12 +3,27 @@ var app = {
   boxes: ["A","A","B","B","C","C","D","D","E","E","F","F"],
   count: [],
   overwrite: true,
-  contBack: $('#container').clone(),
-  // timer = [],
+  timer: 0,
+  interval: "",
+  // interval = setInterval(timer, 1000),
+  //
+
+  intervalFunc: function(){
+    app.interval= setInterval(function() {
+             app.timer += 1;
+               $('#timer').html(app.timer);
+              if(app.player.currentPlay.score === 6)
+              {
+                console.log("ganey");
+                clearInterval(app.interval);
+                clearInterval(app.timer);
+                  }
+            }, 1000);
+  },
 
   player: {
-    one: {name: "" , score:0, disp: ('#nv2')},
-    two: {name:"", score:0, disp: ('#nv3')},
+    one: {name: "" , score:0, disp: ('#nv2'), time: 0},
+    two: {name:"", score:0, disp: ('#nv3'), time: 0},
   },
 
   initFunc: function(){
@@ -34,18 +49,6 @@ var app = {
       $('#nv4').append($('input[name=player2]').val());
       app.player.two.name = $('input[name=player2]').val();
     }
-
-    // interval= setInterval(function() {
-    //    app.timer -= 1;
-    //      $('#timer').text(app.timer);
-    //     if (app.timer <= 0)
-    //     {
-    //       $('#container').html("<h1>TIME'S UP</h1><br><h2>" + app.player.currentPlay.name + "</h2>");
-    //       clearInterval(app.interval);
-    //     }
-    //   }, 1000);
-
-
     app.switchFunc();
   },
 
@@ -58,6 +61,9 @@ var app = {
   },
 
   shuffleFunc: function(){
+    app.timer = 0;
+    clearInterval(app.interval);
+    app.intervalFunc();
     for(var i =0; i < app.boxes.length; i++){
       random = Math.floor(Math.random() *i);
       temp = app.boxes[i];
@@ -76,7 +82,6 @@ var app = {
 
   picFunc: function()
   {
-
     if(app.count.length === 0){
       $(this).addClass($(this).attr('data-val'));
       app.count.push($(this));
@@ -107,13 +112,18 @@ var app = {
 
   winFunc: function() {
     if(app.player.currentPlay.score === 6){
+      app.player.currentPlay.time = app.timer;
+      console.log(app.timer);
+
+
       app.switchFunc();
       // alert(app.player.currentPlay.name+ " Ready");
       $("#container").css('visibility', 'hidden');
-      $('.change').html('<h1>  '+app.player.currentPlay.name+ ' READY!</h1><p>Hit SPACEBAR</p>');
+        $('.change').html('<h1>  '+app.player.currentPlay.name+ ' READY!</h1><p>Hit ENTER</p>');
+
       // app.clickHandlers();
       $(document).keyup(function(ev){
-        if (ev.which == 32){
+        if (ev.which == 13){
           app.play2();
           $(this).off();
         }
@@ -136,11 +146,6 @@ var app = {
   },
 
   clickHandlers: function(){
-    // $(document).keyup(function(ev){
-    //   if (ev.which == 32){
-    //   app.play2();
-    //   console.log("hjk"); }
-    // });
     $('.box').on('click', app.picFunc);
     $('#reset').on('click', app.restartFunc);
     $('#start').on('click', app.submitFunc);
