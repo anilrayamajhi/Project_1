@@ -5,6 +5,8 @@ var app = {
   overwrite: true,
   timer: 0,
   interval: "",
+  dbClick: [],
+  playBack: new Audio('flip.wav'),
   // interval = setInterval(timer, 1000),
   //
 
@@ -77,33 +79,43 @@ var app = {
     });
   },
 
+
   picFunc: function()
   {
-    if(app.count.length === 0){
-      $(this).addClass($(this).attr('data-val'));
-      app.count.push($(this));
-    }
-    else if(app.count.length === 1){
-      if(app.count[0].attr('id') !== $(this).attr('id'))
-      {
+    app.playBack.play();
+    {
+      if(app.count.length === 0){
         $(this).addClass($(this).attr('data-val'));
+        $(this).addClass('disableClick');
         app.count.push($(this));
       }
-    }
-    if(app.count.length === 2){
-      if(app.count[0].attr('data-val') === app.count[1].attr('data-val'))
-      {app.player.currentPlay.score++;
-        $(app.player.currentPlay.disp).empty();
-        $(app.player.currentPlay.disp).append(app.player.currentPlay.score);
-        app.count=[];
-        app.winFunc();}
-      else {
-        setTimeout(function(){
-          app.count[0].removeClass(app.count[0].attr('data-val'));
-          app.count[1].removeClass(app.count[1].attr('data-val'));
-          app.count=[];
-        }, 400);
+      else if(app.count.length === 1){
+        if(app.count[0].attr('id') !== $(this).attr('id'))
+        {
+          $(this).addClass($(this).attr('data-val'));
+          $(this).addClass('disableClick');
+          app.count.push($(this));
+        }
       }
+      if(app.count.length === 2){
+        if(app.count[0].attr('data-val') === app.count[1].attr('data-val'))
+        {app.player.currentPlay.score++;
+          $(app.player.currentPlay.disp).empty();
+          $(app.player.currentPlay.disp).append(app.player.currentPlay.score);
+          app.dbClick.push(app.count[0].attr('id'));
+          app.dbClick.push(app.count[1].attr('id'));
+          app.count=[];
+          app.winFunc();}
+        else {
+          setTimeout(function(){
+            app.count[0].removeClass(app.count[0].attr('data-val'));
+            app.count[0].removeClass('disableClick');
+            app.count[1].removeClass(app.count[1].attr('data-val'));
+            app.count[1].removeClass('disableClick');
+            app.count=[];
+          }, 400);
+        }
+    }
     }
   },
 
@@ -116,6 +128,7 @@ var app = {
 
         app.switchFunc();
         if(app.player.currentPlay === app.player.one){
+          clearInterval(app.interval);
         if(app.player.one.time > app.player.two.time){
             app.trash();
             $('.change').html('<h1>  '+app.player.two.name+ ' WINS!</h1><p>Hit RESTART GAME</p>');
@@ -156,7 +169,7 @@ var app = {
     $('#winDeclare').html('');
     $("#container").css({'visibility': 'visible', 'height': '500px'});
     $("#container > div").css({'visibility': 'visible', 'height': '150px'});
-    $('#container').children().removeClass("A B C D E F");
+    $('#container').children().removeClass("A B C D E F disableClick");
     $('#container').children().removeAttr('data-val');
     app.intervalFunc(app.interval);
     app.shuffleFunc();

@@ -32,6 +32,10 @@ header {
   border-radius: 37px;
 }
 
+.disableClick {
+  pointer-events: none;
+}
+
 .box {
     height:150px;
     width: 150px;
@@ -92,7 +96,7 @@ nav {
   display:flex;
   flex-flow: row;
   justify-content: space-around;
-  
+
 }
 
 .change {
