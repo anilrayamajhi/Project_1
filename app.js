@@ -1,5 +1,7 @@
 var app = {
 
+  // variables
+
   boxes: ["A","A","B","B","C","C","D","D","E","E","F","F"],
   count: [],
   overwrite: true,
@@ -7,13 +9,18 @@ var app = {
   interval: "",
   dbClick: [],
   playBack: new Audio('flip.wav'),
+
+  // Player object
   player: {
     one: {name: "" , score:0, disp: ('#nv2'), time: 0},
     two: {name:"", score:0, disp: ('#nv3'), time: 0},
   },
 
 
+  // functions inside utility object literal
   utility: {
+
+  //setting interval
   intervalFunc: function(){
     app.timer = 0;
     app.interval= setInterval(function() {
@@ -24,10 +31,12 @@ var app = {
             }, 1000);
   },
 
+  //first function runs when program executes
   initFunc: function(){
     app.utility.clickHandlers();
   },
 
+  //assign default or user typed name
   submitFunc: function() {
     $('body').scrollTop(0);
     if($('input[name=player1]').val() === ""){
@@ -51,6 +60,7 @@ var app = {
     app.utility.switchFunc();
   },
 
+  //switches player
   switchFunc: function() {
     $('#entry').css('visibility','hidden');
     $('#splash').css('visibility','visible');
@@ -60,25 +70,25 @@ var app = {
     app.utility.shuffleFunc();
   },
 
+  //randomize boxes array
   shuffleFunc: function(){
-
-    for(var i =0; i < app.boxes.length; i++){
+      for(var i =0; i < app.boxes.length; i++){
       random = Math.floor(Math.random() *i);
       temp = app.boxes[i];
       app.boxes[i] = app.boxes[random];
       app.boxes[random] = temp;
     }
-    // console.log(app.player.currentPlay);
     app.utility.assignFunc();
   },
 
+  // assign data attribute to each div to randomize image
   assignFunc: function (){
     $('.box').each(function (el) {
       $(this).attr('data-val', app.boxes[el]);
     });
   },
 
-
+  //make opened image to non clickable, compare pictures
   picFunc: function()
   {
     app.playBack.play();
@@ -118,6 +128,7 @@ var app = {
     }
   },
 
+  //declares winner or draw, switch play message
   winFunc: function() {
     setTimeout(function(){
       if(app.player.currentPlay.score === 6){
@@ -186,12 +197,15 @@ var app = {
     }, 500);
   },
 
+
+  //misceelleneous performed to style while the message pops in
   trash: function(){
     $("#container").addClass('heightCh');
     $("#container > div").addClass('heightCh');
       $('#winDeclare').addClass('change');
   },
 
+  //player two turn to iterate the game using existing function
   play2: function (){
     $('#playC').addClass('playCh');
     $('#winDeclare').removeClass('change');
@@ -203,11 +217,13 @@ var app = {
     app.utility.shuffleFunc();
   },
 
+  // refreshes the page
   restartFunc: function(){
   location.reload();
   $('body').scrollTop(0);
   },
 
+  // event handler list
   clickHandlers: function(){
     $('.box').on('click', app.utility.picFunc);
     $('#reset').on('click', app.utility.restartFunc);
@@ -216,4 +232,5 @@ var app = {
 },
 };
 
+  // kick off
   app.utility.initFunc();
