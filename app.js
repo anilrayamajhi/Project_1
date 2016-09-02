@@ -7,9 +7,13 @@ var app = {
   interval: "",
   dbClick: [],
   playBack: new Audio('flip.wav'),
-  // interval = setInterval(timer, 1000),
-  //
+  player: {
+    one: {name: "" , score:0, disp: ('#nv2'), time: 0},
+    two: {name:"", score:0, disp: ('#nv3'), time: 0},
+  },
 
+
+  utility: {
   intervalFunc: function(){
     app.timer = 0;
     app.interval= setInterval(function() {
@@ -20,13 +24,8 @@ var app = {
             }, 1000);
   },
 
-  player: {
-    one: {name: "" , score:0, disp: ('#nv2'), time: 0},
-    two: {name:"", score:0, disp: ('#nv3'), time: 0},
-  },
-
   initFunc: function(){
-    app.clickHandlers();
+    app.utility.clickHandlers();
   },
 
   submitFunc: function() {
@@ -48,17 +47,17 @@ var app = {
       $('#nv4').append($('input[name=player2]').val());
       app.player.two.name = $('input[name=player2]').val();
     }
-    app.intervalFunc();
-    app.switchFunc();
+    app.utility.intervalFunc();
+    app.utility.switchFunc();
   },
 
   switchFunc: function() {
     $('#entry').css('visibility','hidden');
     $('#splash').css('visibility','visible');
 
-    (this.player.currentPlay === this.player.one) ? (this.player.currentPlay = this.player.two): (this.player.currentPlay = this.player.one);
+    (app.player.currentPlay === app.player.one) ? (app.player.currentPlay = app.player.two): (app.player.currentPlay = app.player.one);
 
-    app.shuffleFunc();
+    app.utility.shuffleFunc();
   },
 
   shuffleFunc: function(){
@@ -70,7 +69,7 @@ var app = {
       app.boxes[random] = temp;
     }
     // console.log(app.player.currentPlay);
-    app.assignFunc();
+    app.utility.assignFunc();
   },
 
   assignFunc: function (){
@@ -105,7 +104,7 @@ var app = {
           app.dbClick.push(app.count[0].attr('id'));
           app.dbClick.push(app.count[1].attr('id'));
           app.count=[];
-          app.winFunc();}
+          app.utility.winFunc();}
         else {
           setTimeout(function(){
             app.count[0].removeClass(app.count[0].attr('data-val'));
@@ -126,30 +125,44 @@ var app = {
         console.log(app.player.currentPlay.time);
         $("#timer").css('visibility', 'hidden');
 
-        app.switchFunc();
+        app.utility.switchFunc();
         if(app.player.currentPlay === app.player.one){
           clearInterval(app.interval);
         if(app.player.one.time > app.player.two.time){
-            app.trash();
+            app.utility.trash();
             $('.change').html('<h1>  '+app.player.two.name+ ' WINS!</h1><p>Hit RESTART GAME</p>');
         }
         else if(app.player.one.time < app.player.two.time){
-            app.trash();
-            $('.change').html('<h1>  '+app.player.one.name+ ' WINS!</h1><p>Hit RESTART GAME</p>');
+            app.utility.trash();
+            $('.change').html('<h1>  '+app.player.one.name+ ' WINS!</h1><p>Hit ENTER or Click RESTART GAME</p>');
+            $(document).keyup(function(ev){
+              if (ev.which == 13){
+                location.reload();
+                $('body').scrollTop(0);
+                $(this).off();
+              }
+            });
         }
         else {
-              app.trash();
-              $('.change').html('<h1>DRAW!!</h1><p>Hit RESTART GAME</p>');
+              app.utility.trash();
+              $('.change').html('<h1>DRAW!!</h1><p>Hit ENTER or Click RESTART GAME</p>');
+              $(document).keyup(function(ev){
+                if (ev.which == 13){
+                  location.reload();
+                  $('body').scrollTop(0);
+                  $(this).off();
+                }
+              });
           }
         }
         else {
-          app.trash();
+          app.utility.trash();
           $('.change').html('<h1>  '+app.player.currentPlay.name+ ' READY!</h1><p>Hit ENTER</p>');
         clearInterval(app.interval);
         $('#timer').html(0);
         $(document).keyup(function(ev){
           if (ev.which == 13){
-            app.play2();
+            app.utility.play2();
             $(this).off();
           }
         });
@@ -171,8 +184,8 @@ var app = {
     $("#container > div").css({'visibility': 'visible', 'height': '150px'});
     $('#container').children().removeClass("A B C D E F disableClick");
     $('#container').children().removeAttr('data-val');
-    app.intervalFunc(app.interval);
-    app.shuffleFunc();
+    app.utility.intervalFunc(app.interval);
+    app.utility.shuffleFunc();
   },
 
   restartFunc: function(){
@@ -181,11 +194,11 @@ var app = {
   },
 
   clickHandlers: function(){
-    $('.box').on('click', app.picFunc);
-    $('#reset').on('click', app.restartFunc);
-    $('#start').on('click', app.submitFunc);
+    $('.box').on('click', app.utility.picFunc);
+    $('#reset').on('click', app.utility.restartFunc);
+    $('#start').on('click', app.utility.submitFunc);
   },
-
+},
 };
 
-  app.initFunc();
+  app.utility.initFunc();
