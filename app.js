@@ -130,7 +130,14 @@ var app = {
           clearInterval(app.interval);
         if(app.player.one.time > app.player.two.time){
             app.utility.trash();
-            $('.change').html('<h1>  '+app.player.two.name+ ' WINS!</h1><p>Hit RESTART GAME</p>');
+            $('.change').html('<h1>  '+app.player.two.name+ ' WINS!</h1><p>Hit ENTER or Click RESTART GAME</p>');
+            $(document).keyup(function(ev){
+              if (ev.which == 13){
+                location.reload();
+                $('body').scrollTop(0);
+                $(this).off();
+              }
+            });
         }
         else if(app.player.one.time < app.player.two.time){
             app.utility.trash();
@@ -143,6 +150,7 @@ var app = {
               }
             });
         }
+
         else {
               app.utility.trash();
               $('.change').html('<h1>DRAW!!</h1><p>Hit ENTER or Click RESTART GAME</p>');
@@ -160,6 +168,13 @@ var app = {
           $('.change').html('<h1>  '+app.player.currentPlay.name+ ' READY!</h1><p>Hit ENTER</p>');
         clearInterval(app.interval);
         $('#timer').html(0);
+        if ($(document).width() <= 700){
+          $('#playC').removeClass('playCh');
+          $('#playC').click(function(){
+            app.utility.play2();
+            $(this).off();
+          });
+        }
         $(document).keyup(function(ev){
           if (ev.which == 13){
             app.utility.play2();
@@ -172,17 +187,17 @@ var app = {
   },
 
   trash: function(){
-    $("#container").css({'visibility': 'hidden', 'height': '1px'});
-    $("#container > div").css({'visibility': 'hidden', 'height': '1px'});
+    $("#container").addClass('heightCh');
+    $("#container > div").addClass('heightCh');
       $('#winDeclare').addClass('change');
   },
 
   play2: function (){
+    $('#playC').addClass('playCh');
     $('#winDeclare').removeClass('change');
     $('#winDeclare').html('');
-    $("#container").css({'visibility': 'visible', 'height': '500px'});
-    $("#container > div").css({'visibility': 'visible', 'height': '150px'});
-    $('#container').children().removeClass("A B C D E F disableClick");
+    $("#container").removeClass('heightCh');
+    $("#container > div").removeClass("A B C D E F disableClick heightCh");
     $('#container').children().removeAttr('data-val');
     app.utility.intervalFunc(app.interval);
     app.utility.shuffleFunc();

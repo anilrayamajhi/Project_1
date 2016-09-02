@@ -51,6 +51,7 @@ To play this game online please <b>[Click here](https://anilrayamajhi.github.io/
 4. As a player, I can track my time and score simultaneously.
 5. As a player, I can enjoy game without partner since it is time based game and I can compete with my self.
 6. As a player, I have the experience of winning more personalize.
+7. As a player, I can play this game in my phone.
 
 ###Future implementations
 1. As a player, I can allow user to pick the level of difficulty.
